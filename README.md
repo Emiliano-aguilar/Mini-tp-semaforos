@@ -10,22 +10,34 @@ Pseudocodigo planificando el armado del trabajo practico
 2 hornos.
 1 salero.
 Para armar sanguche:
+
 1.	cortar 2 dientes de ajo
-2.	un puñado de perejil, con huevo.
-3.	sal a gusto.
-4.	agregar carne, empanar .
-5.	5 segundos tarda en cocinarse en la sarten.
-6.	Panes tardan 10m en hornearse.
-7.	Junto a lechuga fresca, tomate, cebolla morada y pepino recién cortados.
+2.	
+3.	un puñado de perejil, con huevo.
+4.	
+5.	sal a gusto.
+6.	
+7.	agregar carne, empanar .
+8.	
+9.	5 segundos tarda en cocinarse en la sarten.
+10.	
+11.	Panes tardan 10m en hornearse.
+12.	
+13.	Junto a lechuga fresca, tomate, cebolla morada y pepino recién cortados.
+14.	
 W = wait() ---    P()
+
 S =  signal() ---- V()
-Semaforos del hilo:
+
+Semaforos del hilo
+
 Mezclar, poner_sal, cocinarMila, milaCocinada, panHorneado, cortados  todos iniciados en 0;
+
 Semaforos intra-equipos:
 sem_t sem_sarten  1
 sem_t sem_sal  1
 sem_t sem_horno  2
-agregVerd = junto a lechuga fresca, tomate, cebolla morada y pepino recién cortados.
+
 
 
     Accio         nes del hilo	|Semaforos|     	Semaforos intra-equipos                                                                          
