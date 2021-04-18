@@ -11,20 +11,20 @@ Pseudocodigo planificando el armado del trabajo practico
 1 salero.
 Para armar sanguche:
 
-1.	cortar 2 dientes de ajo
-2.	
-3.	un puñado de perejil, con huevo.
-4.	
-5.	sal a gusto.
-6.	
-7.	agregar carne, empanar .
-8.	
-9.	5 segundos tarda en cocinarse en la sarten.
-10.	
-11.	Panes tardan 10m en hornearse.
-12.	
-13.	Junto a lechuga fresca, tomate, cebolla morada y pepino recién cortados.
-14.	
+1.	cortar 2 dientes de ajocortar 2 dientes de ajo
+
+un puñado de perejil, con huevo.
+
+sal a gusto.
+
+agregar carne, empanar .
+
+5 segundos tarda en cocinarse en la sarten.
+
+Panes tardan 10m en hornearse.
+
+Junto a lechuga fresca, tomate, cebolla morada y pepino recién cortados.
+
 W = wait() ---    P()
 
 S =  signal() ---- V()
@@ -39,10 +39,8 @@ sem_t sem_sal  1
 sem_t sem_horno  2
 
 
-
-    Accio         nes del hilo	|Semaforos|     	Semaforos intra-equipos                                                                          
-    
-  CortarAjoYPer();   	V(mezclar)	
+ 
+  CortarAjoYPer();   	V(mezclar);	
   
 revolver();	P(mezc lar); V(poner_sal);                   
 
