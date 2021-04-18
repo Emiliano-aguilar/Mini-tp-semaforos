@@ -29,12 +29,19 @@ agregVerd = junto a lechuga fresca, tomate, cebolla morada y pepino recién cort
 
 
     Accio         nes del hilo	|Semaforos|     	Semaforos intra-equipos                                                                          
-  CortarAjoYPer();   	V(mezclar);	
-revolver();	P(mezc lar); V(poner_sal);                   	
+    
+  CortarAjoYPer();   	V(mezclar)	
+  
+revolver();	P(mezc lar); V(poner_sal);                   
+
 ponerCarne();	P(poner sal); V(cocinarMila);	P y V (sal);
+
 Cocinar();	p(cocinarMila); v(milaCocinada);	P y V (Sarten); 
+
 hornear();	V(panHorneado);	P y V (horno); 
+
 CortarOtros();	V(cortados);	
+
 Armado();	p(milaCocinada;panHorneado;cortados);	
 		
 
