@@ -56,6 +56,9 @@ Armado();	p(milaCocinada;panHorneado;cortados);
 		
 
 Inconvenientes encontrados no resueltos. 
+
 Armar semáforos intra-equipos.
+
 Lograr leer la receta de un archivo txt
+
 Guardar los resultados del programa en un archivo txt.
