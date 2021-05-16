@@ -8,22 +8,23 @@
 
 #define LIMITE 50
 
+
+	pthread_mutex_t Salero;
+	pthread_mutex_t Sarten;
+	sem_t sem_Hornoo;
+
+
 //creo estructura de semaforos 
 struct semaforos {
-		sem_t sem_mezclar;
+	sem_t sem_mezclar;
+
+	//poner demas semaforos aqui
 	sem_t sem_PonerSal;
 	sem_t sem_Empanar;
-
-
 	sem_t sem_panHorneado;
 	sem_t sem_milaCocinada;
 	sem_t sem_cocinarMila;
 
-
-	sem_t sem_sarten;
-	sem_t sem_sal;
-	sem_t sem_horno;
-	//poner demas semaforos aqui
 };
 
 //creo los pasos con los ingredientes
@@ -106,13 +107,17 @@ void* ponerSal(void *data) {
 	struct parametro *mydata = data;
 		sem_wait(&mydata->semaforos_param.sem_PonerSal);
 
-
+	pthread_mutex_lock(&Salero);
 	//llamo a la funcion imprimir le paso el struct y la accion de la funcion
-	usleep( 900000 );
+	usleep( 200000 );
+	
+	pthread_mutex_unlock(&Salero);
 
 	imprimirAccion(mydata,accion);
 
 	// poner sal a la mezcla habilita a empanar la milanesa.
+
+
 	sem_post(&mydata->semaforos_param.sem_Empanar);
 
 
@@ -145,12 +150,17 @@ void* cocinar(void *data) {
 	struct parametro *mydata = data;
 
     sem_wait(&mydata->semaforos_param.sem_cocinarMila);
+	
+	pthread_mutex_lock(&Sarten);
+
 
 	//llamo a la funcion imprimir le paso el struct y la accion de la funcion
 	usleep( 500000 );
 
 	imprimirAccion(mydata,accion);
 	//uso sleep para simular que que pasa tiempo
+
+		pthread_mutex_unlock(&Sarten);
 
 	// Avisa que la milanesa ya esta cocinada.
 	// habilita a que se pueda armar el sanguche
@@ -162,6 +172,8 @@ void* cocinar(void *data) {
 
 void* hornear(void *data) {
 	//creo el nombre de la accion de la funcion 
+
+	sem_wait(&sem_Hornoo);
 	char *accion = "hornear panes";
 	//creo el puntero para pasarle la referencia de memoria (data) del struct pasado por parametro (la cual es un puntero). 
 	struct parametro *mydata = data;
@@ -172,6 +184,9 @@ void* hornear(void *data) {
 	imprimirAccion(mydata,accion);
 	//uso sleep para simular que que pasa tiempo
 	//doy la señal a la siguiente accion (habilita armar sanguche)
+
+		sem_post(&sem_Hornoo);
+
     sem_post(&mydata->semaforos_param.sem_panHorneado);
 	
     pthread_exit(NULL);
@@ -198,19 +213,12 @@ void* armado(void *data) {
 }
 
 
-
-
 void* ejecutarReceta(void *i) {
 	
 	//variables semaforos
 	sem_t sem_mezclar;
 	
 	//crear variables semaforos aqui
-	//sem_t sem_sarten;
-	sem_t sem_sal;
-	//sem_t sem_horno;
-
-
 
 	sem_t sem_PonerSal;
 	sem_t sem_Empanar;
@@ -218,7 +226,6 @@ void* ejecutarReceta(void *i) {
 	sem_t sem_milaCocinada;
 	sem_t sem_cocinarMila;
 
-	
 	//variables hilos
 	pthread_t p1; 
 	//crear variables hilos aqui
@@ -247,89 +254,57 @@ void* ejecutarReceta(void *i) {
 
 	//seteo semaforos
 	pthread_data->semaforos_param.sem_mezclar = sem_mezclar;
+
 	//setear demas semaforos al struct aqui
 	pthread_data->semaforos_param.sem_PonerSal= sem_PonerSal;
-
 	pthread_data->semaforos_param.sem_Empanar= sem_Empanar;
+	pthread_data->semaforos_param.sem_panHorneado = sem_panHorneado;
+	pthread_data->semaforos_param.sem_milaCocinada = sem_milaCocinada;
+	pthread_data->semaforos_param.sem_cocinarMila = sem_cocinarMila;
+	
+	FILE *leer = fopen("receta","r");
 
-		pthread_data->semaforos_param.sem_panHorneado = sem_panHorneado;
-		pthread_data->semaforos_param.sem_milaCocinada = sem_milaCocinada;
-		pthread_data->semaforos_param.sem_cocinarMila = sem_cocinarMila;
+	char hola[100];
+	char holaa[100];
 
+	char leerr[] = "|";
+	fgets(hola,100,leer);
+	int contAcc = 0;
+	int contIngre = 0;
+	// donde se guarda | maximo caracteres | archivo
 
+	char *token = strtok(hola, leerr);
 
-	//seteo las acciones y los ingredientes (Faltan acciones e ingredientes) ¿Se ve hardcodeado no? ¿Les parece bien?	
+	while(contAcc < 8){
+    		if(token != NULL){
+			//strcpy(pthread_data->pasos_param[0].accion, "cortar");
+			strcpy(pthread_data->pasos_param[contAcc].accion, token);			
+			fgets(hola,100,leer);
+			char *token = strtok(hola, leerr);
+			while(contIngre < 2){
+				strcpy(pthread_data->pasos_param[contAcc].ingredientes[contIngre], token);
+				fgets(hola,100,leer);
+				char *token = strtok(hola, leerr);
+				contIngre++;	
+			}
+		}
+	contIngre = 0;
+	contAcc++;
+	}
+    
 
-	// corto el ajo y perejil	
-	strcpy(pthread_data->pasos_param[1].accion, "cortar");
-
-	strcpy(pthread_data->pasos_param[1].ingredientes[0], "ajo");
-	strcpy(pthread_data->pasos_param[1].ingredientes[1], "perejil");
-
-	// mezclo lo cortado del ajo y perejil con el huevo
-	strcpy(pthread_data->pasos_param[2].accion, "revolver");
-	strcpy(pthread_data->pasos_param[2].ingredientes[0], "huevo");
-	strcpy(pthread_data->pasos_param[2].ingredientes[1], "Cortado de ajo y perejil");
-
-	// Agrego sal a la mezcla
-	strcpy(pthread_data->pasos_param[3].accion, "poner Sal");
-	strcpy(pthread_data->pasos_param[3].ingredientes[0], "sal");
-	strcpy(pthread_data->pasos_param[3].ingredientes[1], "Mezcla de huevo, ajo y perejil");
-
-
-
-
-
-	// agrego la carne
-	strcpy(pthread_data->pasos_param[4].accion, "Agregar Carne y empanar");
-	strcpy(pthread_data->pasos_param[4].ingredientes[0], "carne");
-	strcpy(pthread_data->pasos_param[4].ingredientes[1], "Mezcla de huevo, ajo y perejil , sal");
-
-
-
-
-
-	// Cocinar en sarten
-	strcpy(pthread_data->pasos_param[5].accion, "Cocinar milanesa");
-	strcpy(pthread_data->pasos_param[5].ingredientes[0], "Milaneza ya preparada.");
-
-
-
-	// honear panes
-	strcpy(pthread_data->pasos_param[6].accion, "hornear panes");
-	strcpy(pthread_data->pasos_param[6].ingredientes[0], "pan");
-
-
-
-	// cortar lechuga , tomate , cebolla morada y pepino
-	strcpy(pthread_data->pasos_param[7].accion, "cortar");
-	strcpy(pthread_data->pasos_param[7].ingredientes[0], "lechuga");
-	strcpy(pthread_data->pasos_param[7].ingredientes[1], "Tomate");
-	strcpy(pthread_data->pasos_param[7].ingredientes[2], "Cebolla morada");
-	strcpy(pthread_data->pasos_param[7].ingredientes[3], "Pepino");
-
-
-
-	// armar todo
-	strcpy(pthread_data->pasos_param[0].accion, "Armar sanguche");
-	strcpy(pthread_data->pasos_param[0].ingredientes[0], "Milanesa cocinada");
-	strcpy(pthread_data->pasos_param[0].ingredientes[1], "Panes honeados");
-	strcpy(pthread_data->pasos_param[0].ingredientes[2], "Luchuga,tomates ,cebolla morada y pepinos cortados");
+	fclose(leer);
 
 	//inicializo los semaforos
 
 	sem_init(&(pthread_data->semaforos_param.sem_mezclar),0,0);
+
 	//inicializar demas semaforos aqui
+
 	sem_init(&(pthread_data->semaforos_param.sem_PonerSal),0,0);
-//	sem_init(&(pthread_data->semaforos_param.sem_sarten),0,0);	
 	sem_init(&(pthread_data->semaforos_param.sem_panHorneado),0,0);
 	sem_init(&(pthread_data->semaforos_param.sem_milaCocinada),0,0);
 	sem_init(&(pthread_data->semaforos_param.sem_cocinarMila),0,0);
-
-
-//	sem_init(&(pthread_data->semaforos_param.sem_horno),0,0);
-
-
 
 	//creo los hilos a todos les paso el struct creado (el mismo a todos los hilos) ya que todos comparten los semaforos 
     int rc;
@@ -342,8 +317,6 @@ void* ejecutarReceta(void *i) {
                                 revolver,             //funcion a ejecutar
                                 pthread_data);
 
-
- 
 	    rc = pthread_create(&p3,                           //identificador unico
                             NULL,                          //atributos del thread
                                 ponerSal,             //funcion a ejecutar
@@ -367,13 +340,6 @@ void* ejecutarReceta(void *i) {
                                 pthread_data);
 
 
-
-
-
-
-
-
-
 	//crear demas hilos aqui
 	
 	
@@ -388,9 +354,6 @@ void* ejecutarReceta(void *i) {
 	pthread_join (p7,NULL);
 
 
-
-
-
 	//valido que el hilo se alla creado bien 
     if (rc){
        printf("Error:unable to create thread, %d \n", rc);
@@ -402,6 +365,13 @@ void* ejecutarReceta(void *i) {
 	sem_destroy(&sem_mezclar);
 
 	//destruir demas semaforos 
+	sem_destroy(&sem_PonerSal);
+	sem_destroy(&sem_Empanar);
+	sem_destroy(&sem_panHorneado);
+	sem_destroy(&sem_milaCocinada);
+	sem_destroy(&sem_cocinarMila);
+
+
 	
 	//salida del hilo
 	 pthread_exit(NULL);
@@ -410,6 +380,14 @@ void* ejecutarReceta(void *i) {
 
 int main ()
 {
+
+	FILE *leer = fopen("receta","r");
+
+	pthread_mutex_init(&Salero,NULL);
+	pthread_mutex_init(&Sarten,NULL);
+	sem_init(&sem_Hornoo,0,2);
+
+
 	//creo los nombres de los equipos 
 	int rc;
 	int *equipoNombre1 =malloc(sizeof(*equipoNombre1));
@@ -461,17 +439,20 @@ int main ()
 
 	//join de todos los hilos
 	pthread_join (equipo1,NULL);
+
+//.. faltan joins
+
 	pthread_join (equipo2,NULL);
 	pthread_join (equipo3,NULL);
 	pthread_join (equipo4,NULL);
 
 
-//.. faltan joins
 
 
-    pthread_exit(NULL);
+
+	pthread_exit(NULL);
+	fclose(leer);
+
 }
-
-
 //Para compilar:   gcc subwayArgento.c -o ejecutable -lpthread
 //Para ejecutar:   ./ejecutable
