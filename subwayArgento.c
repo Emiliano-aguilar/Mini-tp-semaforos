@@ -1,4 +1,4 @@
-#include <stdio.h>      // libreria estandar
+#include <stdio.h>      // libreria #include <stdio.h>      // libreria estandar
 #include <stdlib.h>     // para usar exit y funciones de la libreria standard
 #include <string.h>
 #include <pthread.h>    // para usar threads
@@ -263,6 +263,8 @@ void* ejecutarReceta(void *i) {
 	pthread_data->semaforos_param.sem_cocinarMila = sem_cocinarMila;
 	
 	FILE *leer = fopen("receta","r");
+	FILE *escribir = fopen("resultado","w");
+
 
 	char hola[100];
 	char holaa[100];
@@ -277,12 +279,14 @@ void* ejecutarReceta(void *i) {
 
 	while(contAcc < 8){
     		if(token != NULL){
-			//strcpy(pthread_data->pasos_param[0].accion, "cortar");
-			strcpy(pthread_data->pasos_param[contAcc].accion, token);			
+			strcpy(pthread_data->pasos_param[contAcc].accion, token);	
 			fgets(hola,100,leer);
 			char *token = strtok(hola, leerr);
 			while(contIngre < 2){
 				strcpy(pthread_data->pasos_param[contAcc].ingredientes[contIngre], token);
+				hola == strcpy(pthread_data->pasos_param[contAcc].ingredientes[contIngre], token);	
+				fwrite(&hola,strlen(hola),1, escribir);
+				fwrite("\n",strlen("\n"),1, escribir);
 				fgets(hola,100,leer);
 				char *token = strtok(hola, leerr);
 				contIngre++;	
@@ -294,6 +298,9 @@ void* ejecutarReceta(void *i) {
     
 
 	fclose(leer);
+	fclose(escribir);
+
+
 
 	//inicializo los semaforos
 
@@ -312,6 +319,7 @@ void* ejecutarReceta(void *i) {
                             NULL,                          //atributos del thread
                                 cortar,             //funcion a ejecutar
                                 pthread_data);                     //parametros de la funcion a ejecutar, pasado por referencia
+	
 	    rc = pthread_create(&p2,                           //identificador unico
                             NULL,                          //atributos del thread
                                 revolver,             //funcion a ejecutar
