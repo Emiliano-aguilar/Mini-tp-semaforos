@@ -3,7 +3,8 @@ Trabajo Práctico Semáforos primer semestre año 2021
 
 
 En esta ocasión, pude lograr finalizar el tp completamente.
-Los principales inconvenientes que encontre fue, poder declarar los semaforos y mutex que compartian los 3 equipos, y por el otro lado la lectura y escritura de archivos.
+Los principales inconvenientes que encontre fue, poder declarar los semaforos y mutex que compartian los 3 equipos, y por el otro lado la lectura y escritura de archivos.Si
+Si bien logre la lectura y escritura, no logre que se escriban de quienes eran las acciones de los equipos-
 
 Pseudocodigo planificando el armado del trabajo practico
 
@@ -64,3 +65,4 @@ Armar semáforos intra-equipos.
 Lograr leer la receta de un archivo txt
 
 Guardar los resultados del programa en un archivo txt.
+perono logre guardar las lineas completas donde indica las acciones de cada equipo.
