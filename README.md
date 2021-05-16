@@ -55,7 +55,7 @@ CortarOtros();	V(cortados);
 Armado();	p(milaCocinada;panHorneado;cortados);	
 		
 
-Inconvenientes encontrados no resueltos. 
+Inconvenientes encontrados resueltos luego de la reentrega.
 
 Armar semáforos intra-equipos.
 
