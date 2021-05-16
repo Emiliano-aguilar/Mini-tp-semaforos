@@ -2,7 +2,9 @@
 Trabajo Práctico Semáforos primer semestre año 2021
 
 
-En esta ocasión, no logre la resolución completa del trabajo practico, por cuestiones personales. Más allá del tiempo adicional que se nos brindó, no logre darle el tiempo correspondiente para resolver los problemas que se me fueron dando a la hora de avanzar con el trabajo práctico, principalmente me resto más lectura para implementar en C mi planificación .
+En esta ocasión, pude lograr finalizar el tp completamente.
+Los principales inconvenientes que encontre fue, poder declarar los semaforos y mutex que compartian los 3 equipos, y por el otro lado la lectura y escritura de archivos.
+
 Pseudocodigo planificando el armado del trabajo practico
 
 4 equipos. (4 hilos)
